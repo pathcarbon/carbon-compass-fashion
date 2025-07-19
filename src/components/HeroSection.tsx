@@ -43,22 +43,12 @@ export const HeroSection = () => {
             </Link>
             
             <Button 
-              variant="outline" 
+              variant="secondary" 
               size="lg" 
-              className="text-lg px-8 py-4 border-white/30 text-white hover:bg-white/10"
+              className="text-lg px-8 py-4 bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm"
             >
               Get in Touch
             </Button>
-          </div>
-          
-          <div className="mt-12 flex justify-center">
-            <a 
-              href="https://pathcarbon.com" 
-              className="text-white/80 hover:text-white transition-colors duration-300 flex items-center gap-2"
-            >
-              🌐 Visit Our Website
-              <ArrowRight className="h-4 w-4" />
-            </a>
           </div>
         </div>
       </div>

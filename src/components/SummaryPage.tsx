@@ -23,10 +23,10 @@ const impactData = [
 ];
 
 const supplyChainData = [
-  { stage: "Fibre", climate: 2.1, water: 250, land: 1.8, energy: 4.2 },
-  { stage: "Yarn", climate: 1.2, water: 180, land: 0.8, energy: 3.1 },
-  { stage: "Fabric", climate: 1.8, water: 200, land: 0.4, energy: 3.8 },
-  { stage: "Garment", climate: 0.32, water: 50, land: 0.12, energy: 1.0 }
+  { stage: "Fibre", climate_fossil: 1.8, climate_biogenic: 0.3, water: 250, land: 1.8, energy: 4.2 },
+  { stage: "Yarn", climate_fossil: 1.1, climate_biogenic: 0.1, water: 180, land: 0.8, energy: 3.1 },
+  { stage: "Fabric", climate_fossil: 1.0, climate_biogenic: 0.4, water: 200, land: 0.4, energy: 3.8 },
+  { stage: "Garment", climate_fossil: 0.2, climate_biogenic: 0.1, water: 50, land: 0.12, energy: 1.0 }
 ];
 
 const climateBreakdown = [
@@ -187,10 +187,50 @@ export const SummaryPage = () => {
               </CardContent>
             </Card>
 
-            {/* Supply Chain Bar Chart */}
+            {/* Supply Chain Stacked Bar Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Climate Impact Chart */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Climate Impact (kg CO₂e)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={supplyChainData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="stage" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="climate_fossil" stackId="climate" fill="#dc2626" name="Fossil CO₂" />
+                      <Bar dataKey="climate_biogenic" stackId="climate" fill="#16a34a" name="Biogenic CO₂" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              {/* Water Use Chart */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Water Use (Liters)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={supplyChainData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="stage" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="water" fill="#0ea5e9" name="Water Use (L)" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Combined Overview Chart */}
             <Card>
               <CardHeader>
-                <CardTitle>Supply Chain Impact by Stage</CardTitle>
+                <CardTitle>All Impact Categories by Stage</CardTitle>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={400}>
@@ -199,9 +239,10 @@ export const SummaryPage = () => {
                     <XAxis dataKey="stage" />
                     <YAxis />
                     <Tooltip />
-                    <Bar dataKey="climate" fill={COLORS[0]} name="Climate (kg CO₂e)" />
-                    <Bar dataKey="water" fill={COLORS[1]} name="Water (L)" />
-                    <Bar dataKey="energy" fill={COLORS[2]} name="Energy (MJ)" />
+                    <Bar dataKey="climate_fossil" fill="#dc2626" name="Climate - Fossil (kg CO₂e)" />
+                    <Bar dataKey="climate_biogenic" fill="#16a34a" name="Climate - Biogenic (kg CO₂e)" />
+                    <Bar dataKey="water" fill="#0ea5e9" name="Water (L)" />
+                    <Bar dataKey="energy" fill="#f59e0b" name="Energy (MJ)" />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
