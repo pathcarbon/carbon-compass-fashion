@@ -16,17 +16,17 @@ import { Link } from "react-router-dom";
 
 // Sample data for the demo
 const impactData = [
-  { category: "Climate Impact", value: 5.42, unit: "kg CO₂e", fossil: 4.1, biogenic: 0.9, icon: Globe },
+  { category: "Climate Impact", value: 5.42, unit: "kg CO₂e", fossil: 4.1, biogenic: 0.9, luLuc: 0.42, icon: Globe },
   { category: "Water Use", value: 680, unit: "L", icon: Droplets },
   { category: "Land Use", value: 3.12, unit: "m²a", icon: Sprout },
   { category: "Energy Use", value: 12.1, unit: "MJ", renewable: 4.2, nonRenewable: 7.9, icon: Zap }
 ];
 
 const supplyChainData = [
-  { stage: "Fibre", climate_fossil: 1.8, climate_biogenic: 0.3, water: 250, land: 1.8, energy: 4.2 },
-  { stage: "Yarn", climate_fossil: 1.1, climate_biogenic: 0.1, water: 180, land: 0.8, energy: 3.1 },
-  { stage: "Fabric", climate_fossil: 1.0, climate_biogenic: 0.4, water: 200, land: 0.4, energy: 3.8 },
-  { stage: "Garment", climate_fossil: 0.2, climate_biogenic: 0.1, water: 50, land: 0.12, energy: 1.0 }
+  { stage: "Fibre", climate_fossil: 1.8, climate_biogenic: 0.3, climate_luluc: 0.0, water: 250, land: 1.8, energy: 4.2 },
+  { stage: "Yarn", climate_fossil: 1.1, climate_biogenic: 0.1, climate_luluc: 0.0, water: 180, land: 0.8, energy: 3.1 },
+  { stage: "Fabric", climate_fossil: 1.0, climate_biogenic: 0.4, climate_luluc: 0.4, water: 200, land: 0.4, energy: 3.8 },
+  { stage: "Garment", climate_fossil: 0.2, climate_biogenic: 0.1, climate_luluc: 0.02, water: 50, land: 0.12, energy: 1.0 }
 ];
 
 const climateBreakdown = [
@@ -139,7 +139,7 @@ export const SummaryPage = () => {
                 {(impact.fossil || impact.renewable) && (
                   <div className="text-xs text-muted-foreground mt-2">
                     {impact.fossil && (
-                      <div>Fossil: {impact.fossil} | Biogenic: {impact.biogenic}</div>
+                      <div>Fossil: {impact.fossil} | Biogenic: {impact.biogenic} | LU-LUC: {impact.luLuc}</div>
                     )}
                     {impact.renewable && (
                       <div>Renewable: {impact.renewable} | Non-Renewable: {impact.nonRenewable}</div>
@@ -203,6 +203,7 @@ export const SummaryPage = () => {
                       <Tooltip />
                       <Bar dataKey="climate_fossil" stackId="climate" fill="#dc2626" name="Fossil CO₂" />
                       <Bar dataKey="climate_biogenic" stackId="climate" fill="#16a34a" name="Biogenic CO₂" />
+                      <Bar dataKey="climate_luluc" stackId="climate" fill="#ea580c" name="LU-LUC CO₂" />
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -226,27 +227,6 @@ export const SummaryPage = () => {
                 </CardContent>
               </Card>
             </div>
-
-            {/* Combined Overview Chart */}
-            <Card>
-              <CardHeader>
-                <CardTitle>All Impact Categories by Stage</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={400}>
-                  <BarChart data={supplyChainData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="stage" />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="climate_fossil" fill="#dc2626" name="Climate - Fossil (kg CO₂e)" />
-                    <Bar dataKey="climate_biogenic" fill="#16a34a" name="Climate - Biogenic (kg CO₂e)" />
-                    <Bar dataKey="water" fill="#0ea5e9" name="Water (L)" />
-                    <Bar dataKey="energy" fill="#f59e0b" name="Energy (MJ)" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
 
             {/* Radar Chart */}
             {showBenchmark && (
