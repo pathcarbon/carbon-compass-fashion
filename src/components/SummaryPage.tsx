@@ -96,6 +96,26 @@ export const SummaryPage = () => {
 
   const COLORS = ["#158c4a", "#14b8a6", "#f59e0b", "#ef4444", "#8b5cf6"];
 
+  // Convert data to percentage when needed
+  const getChartData = () => {
+    if (viewMode === "absolute") {
+      return supplyChainData;
+    }
+    
+    // Convert to percentages
+    return supplyChainData.map(item => {
+      const climateTotal = item.climate_fossil + item.climate_biogenic + item.climate_luluc;
+      return {
+        ...item,
+        climate_fossil: climateTotal > 0 ? Number(((item.climate_fossil / climateTotal) * 100).toFixed(1)) : 0,
+        climate_biogenic: climateTotal > 0 ? Number(((item.climate_biogenic / climateTotal) * 100).toFixed(1)) : 0,
+        climate_luluc: climateTotal > 0 ? Number(((item.climate_luluc / climateTotal) * 100).toFixed(1)) : 0,
+      };
+    });
+  };
+
+  const chartData = getChartData();
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -192,15 +212,22 @@ export const SummaryPage = () => {
               {/* Climate Impact Chart */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Climate Impact (kg CO₂e)</CardTitle>
+                  <CardTitle>
+                    Climate Impact {viewMode === "percentage" ? "(% of Total CO₂e)" : "(kg CO₂e)"}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={supplyChainData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="stage" />
                       <YAxis />
-                      <Tooltip />
+                      <Tooltip 
+                        formatter={(value, name) => [
+                          `${value}${viewMode === "percentage" ? "%" : " kg"}`, 
+                          name
+                        ]}
+                      />
                       <Bar dataKey="climate_fossil" stackId="climate" fill="#dc2626" name="Fossil CO₂" />
                       <Bar dataKey="climate_biogenic" stackId="climate" fill="#16a34a" name="Biogenic CO₂" />
                       <Bar dataKey="climate_luluc" stackId="climate" fill="#ea580c" name="LU-LUC CO₂" />
@@ -216,11 +243,16 @@ export const SummaryPage = () => {
                 </CardHeader>
                 <CardContent>
                   <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={supplyChainData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="stage" />
                       <YAxis />
-                      <Tooltip />
+                      <Tooltip 
+                        formatter={(value, name) => [
+                          `${value} L`, 
+                          name
+                        ]}
+                      />
                       <Bar dataKey="water" fill="#0ea5e9" name="Water Use (L)" />
                     </BarChart>
                   </ResponsiveContainer>
